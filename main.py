@@ -11,7 +11,7 @@ class Customer:
         
         
     def orders(self):
-        return set([order for order in Order.all if order.coffee==self])
+        return [order for order in Order.all if order.coffee==self]
     
     def customers(self):
         return  set([order for order in order.all if order.customer==self])
@@ -35,6 +35,8 @@ class Coffee:
         
         # Validate and assign the name
         self._name = self.validate_name(name)
+        self.orders=self.orders()
+
 
     @staticmethod
     def validate_name(name):
@@ -50,13 +52,17 @@ class Coffee:
         return self._name
     
     def orders(self):
-        return set([order for order in Order.all if order.coffee==self])
+        return [order for order in Order.all if order.coffee==self]
     
     def customers(self):
         return set([order for order in order.all if order.customer==self])
     
 
-    def num_orders
+    def num_orders(self):
+        if  self.orders:
+            return sum(self.orders())
+        else:
+            return 0
 
 
 
