@@ -44,7 +44,7 @@ class Coffee:
 
     @property
     def name(self):
-        """Returns the coffee's name."""
+        # Returns the coffee's name
         return self._name
 
     def __str__(self):
