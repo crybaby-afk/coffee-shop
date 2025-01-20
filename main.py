@@ -9,12 +9,13 @@ class Customer:
         else:
             raise ValueError("Name must be a string between 1 and 15 characters.")
 
+
     def orders(self):
         # Return all orders for this customer
         return [order for order in Order.all if order.customer == self]
     
-    def coffees(self):
-        # Return unique coffees for this customer
+    def coffee(self):
+        # Return unique coffee for this customer
         return set(order.coffee for order in Order.all if order.customer == self)
 
     def create_order(self, coffee, price):
