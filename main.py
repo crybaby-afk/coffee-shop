@@ -1,7 +1,7 @@
 class Customer:
     def __init__(self, name):
         self.name = self.validate_name(name)
-        self.orders_list = []  # Use a distinct name to avoid conflicts
+        self.orders_list = []  # Uses a distinct name to avoid conflicts
 
     def validate_name(self, name):
         if isinstance(name, str) and 15 >= len(name) >= 1:
@@ -25,51 +25,44 @@ class Customer:
             return new_order
         else:
             raise ValueError("Invalid coffee or price type.")
-
-
 class Coffee:
     def __init__(self, name):
-        # Check if _name is already set
-        if hasattr(self, "_name"):
-            raise AttributeError("Invalid choice...coffee name cannot be changed after initialization.")
-        
-        # Validate and assign the name
         self._name = self.validate_name(name)
 
-    def validate_name(self, name):  
-        """Validates the coffee name."""
+    def validate_name(self, name):
         if isinstance(name, str) and len(name) >= 3:
             return name
         else:
-            raise ValueError("Unavailable: Name must be a string with at least 3 characters.")
+            raise ValueError("Name must be a string with at least 3 characters.")
 
     @property
     def name(self):
-        # Returns the coffee's name
         return self._name
 
-    def __str__(self):
-        """Return the coffee name when printed."""
-        return self._name
-
-    def __repr__(self):
-        """Provide a string representation for debugging."""
-        return f"Coffee(name='{self._name}')"
-
-    def orders(self):
-        return [order for order in Order.all if order.coffee == self]
-
-    def customers(self):
-        return set(order.customer for order in Order.all if order.coffee == self)
+    @name.setter
+    def name(self, new_name):
+        raise AttributeError("Cannot modify the coffee name after initialization.")
 
     def num_orders(self):
-        return len(self.orders())  # Return the count of orders
+        """Return the total number of orders for this coffee."""
+        return len([order for order in Order.all if order.coffee == self])
 
     def average_price(self):
-        orders = self.orders()
+        """Return the average price of this coffee across all orders."""
+        orders = [order for order in Order.all if order.coffee == self]
         if orders:
-            return sum(order._price for order in orders) / len(orders)  # Calculate average price
+            total_price = sum(order._price for order in orders)
+            return total_price / len(orders)
         return 0
+    @name.setter
+    def name(self, new_name):
+        raise AttributeError("Cannot modify the coffee name after initialization.")
+
+    def __setattr__(self, key, value):
+        if key == "_name" and hasattr(self, "_name"):
+            raise AttributeError(f"{key} cannot be modified after initialization.")
+        super().__setattr__(key, value)
+
 
 
 class Order:
@@ -77,7 +70,7 @@ class Order:
 
     def __init__(self, price, customer=None, coffee=None):
         if hasattr(self, "_price"):
-            raise AttributeError("Price cannot be changed after initialization.")
+            raise AttributeError("Price cannot be changed after input.")
 
         self.customer = self.validate_customer(customer)
         self.coffee = self.validate_coffee(coffee)
@@ -108,43 +101,17 @@ class Order:
 
 
 
-customer = Customer("LARRY")
-coffee = Coffee("Latte")
+customer1 = Customer("astalavista")
+coffee1 = Coffee("Latte")
 
-# # Creating an order
-order = customer.create_order(coffee, 5.5)
+order1 = customer1.create_order(coffee1, 5.5)
 
+print(f"Customer: {customer1.name}, Coffee: {coffee1.name}, Average Price: {coffee1.average_price()}")
 
-print(coffee.num_orders()) 
-print(coffee.average_price()) 
+customer2 = Customer("LARRY")
+order2 = customer2.create_order(coffee1, 6.5)
 
-
-
-
-customer = Customer("LARRY")
-coffee = Coffee("Latte")
-
-# Creating an order
-order = customer.create_order(coffee, 5.5)
-
-print(coffee)  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+print(f"Customer: {customer2.name}, Coffee: {coffee1.name}, Average Price: {coffee1.average_price()}")
 
 
 
